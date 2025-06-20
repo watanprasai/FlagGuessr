@@ -202,10 +202,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const flagImage = document.getElementById('flag-image');
     const optionsContainer = document.getElementById('options-container');
+    const typingContainer = document.getElementById('typing-container');
+    const typingInput = document.getElementById('typing-answer');
+    const submitAnswerButton = document.getElementById('submit-answer');
     const feedbackText = document.getElementById('feedback');
     const nextButton = document.getElementById('next-button');
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
 
     let correctAnswer = null;
+    let currentMode = 'choice';
 
     function shuffleArray(array) {
         // สลับลำดับข้อมูลใน Array แบบสุ่ม
@@ -216,42 +221,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayNewQuestion() {
-        // รีเซ็ตสถานะ
         feedbackText.textContent = '';
         feedbackText.className = '';
         optionsContainer.innerHTML = '';
+        typingInput.value = '';
 
-        // 1. สุ่มประเทศที่เป็นคำตอบที่ถูกต้อง
         const correctCountryIndex = Math.floor(Math.random() * countries.length);
         correctAnswer = countries[correctCountryIndex];
 
-        // 2. สร้างลิสต์ตัวเลือก (รวมคำตอบที่ถูก)
-        const options = [correctAnswer];
-        const usedIndexes = [correctCountryIndex];
-
-        // 3. สุ่มตัวเลือกที่ไม่ถูกต้องอีก 3 ตัว
-        while (options.length < 4) {
-            const randomIndex = Math.floor(Math.random() * countries.length);
-            if (!usedIndexes.includes(randomIndex)) {
-                usedIndexes.push(randomIndex);
-                options.push(countries[randomIndex]);
-            }
-        }
-        
-        // 4. สลับลำดับตัวเลือก
-        shuffleArray(options);
-
-        // 5. แสดงธงชาติและสร้างปุ่มตัวเลือก
         flagImage.src = `https://flagcdn.com/w320/${correctAnswer.code}.png`;
         flagImage.alt = `ธงชาติ ${correctAnswer.name}`;
 
-        options.forEach(option => {
-            const button = document.createElement('button');
-            button.textContent = option.name;
-            button.className = 'option-button';
-            button.onclick = () => checkAnswer(option.name);
-            optionsContainer.appendChild(button);
-        });
+        if (currentMode === 'choice') {
+            const options = [correctAnswer];
+            const usedIndexes = [correctCountryIndex];
+            while (options.length < 4) {
+                const randomIndex = Math.floor(Math.random() * countries.length);
+                if (!usedIndexes.includes(randomIndex)) {
+                    usedIndexes.push(randomIndex);
+                    options.push(countries[randomIndex]);
+                }
+            }
+            shuffleArray(options);
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.name;
+                button.className = 'option-button';
+                button.onclick = () => checkAnswer(option.name);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        optionsContainer.style.display = currentMode === 'choice' ? 'block' : 'none';
+        typingContainer.style.display = currentMode === 'typing' ? 'block' : 'none';
     }
 
     function checkAnswer(selectedName) {
@@ -259,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const buttons = optionsContainer.querySelectorAll('.option-button');
         buttons.forEach(button => {
             button.disabled = true;
-        });
+        }); 
 
         // ตรวจสอบคำตอบและแสดงผล
         if (selectedName === correctAnswer.name) {
@@ -270,6 +272,19 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackText.className = 'incorrect';
         }
     }
+
+    // ตอบจากช่องพิมพ์
+    submitAnswerButton.addEventListener('click', () => {
+        checkAnswer(typingInput.value);
+    });
+
+    // เปลี่ยนโหมด
+    modeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            currentMode = e.target.value;
+            displayNewQuestion();
+        });
+    });
 
     // เมื่อกดปุ่ม "ธงถัดไป" ให้แสดงคำถามใหม่
     nextButton.addEventListener('click', displayNewQuestion);

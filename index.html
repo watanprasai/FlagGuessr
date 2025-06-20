@@ -9,20 +9,33 @@
 <body>
 
     <div class="container">
-        <h1>เกมทายธงชาติ</h1>
-        <p>ธงชาตินี้เป็นของประเทศอะไร?</p>
-        
-        <div class="flag-container">
-            <img id="flag-image" src="" alt="ธงชาติ">
-        </div>
-        
-        <div id="options-container" class="options-container">
-            </div>
-        
-        <button id="next-button">ธงถัดไป</button>
-        
-        <p id="feedback"></p>
+    <h1>เกมทายธงชาติ</h1>
+    <p>ธงชาตินี้เป็นของประเทศอะไร?</p>
+
+    <!-- ปุ่มเลือกโหมด -->
+    <div>
+        <label><input type="radio" name="mode" value="choice" checked> ตัวเลือก</label>
+        <label><input type="radio" name="mode" value="typing"> พิมพ์คำตอบ</label>
     </div>
+
+    <div class="flag-container">
+        <img id="flag-image" src="" alt="ธงชาติ">
+    </div>
+
+    <!-- โหมดตัวเลือก -->
+    <div id="options-container" class="options-container"></div>
+
+    <!-- โหมดพิมพ์ -->
+    <div id="typing-container" style="display: none;">
+        <input type="text" id="typing-answer" placeholder="พิมพ์ชื่อประเทศ">
+        <button id="submit-answer">ส่งคำตอบ</button>
+    </div>
+
+    <button id="next-button">ธงถัดไป</button>
+
+    <p id="feedback"></p>
+    </div>
+
 
     <script src="script.js"></script>
 </body>

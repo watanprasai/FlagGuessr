@@ -8,6 +8,18 @@ body {
     margin: 0;
 }
 
+.correct {
+    color: green;
+}
+.incorrect {
+    color: red;
+}
+.option-button {
+    margin: 5px;
+    padding: 10px 15px;
+}
+
+
 .container {
     background-color: white;
     padding: 30px;
