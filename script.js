@@ -203,11 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const flagImage = document.getElementById('flag-image');
     const optionsContainer = document.getElementById('options-container');
     const typingContainer = document.getElementById('typing-container');
-    const typingInput = document.getElementById('typing-answer');
+   
     const submitAnswerButton = document.getElementById('submit-answer');
     const feedbackText = document.getElementById('feedback');
     const nextButton = document.getElementById('next-button');
     const modeRadios = document.querySelectorAll('input[name="mode"]');
+
+    const typingInput = document.getElementById('typing-answer');
+    const autocompleteResults = document.getElementById('autocomplete-results'); // เพิ่มตัวแปรนี้
     
     const streakIcon = document.getElementById('streak-icon');
     const streakCounter = document.getElementById('streak-counter');
@@ -226,6 +229,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const startGameButton = document.getElementById('start-game-button');
     const gameContainer = document.getElementById('game-container');
     let lastVolume = 0.5;
+
+     typingInput.addEventListener('input', () => {
+        const query = typingInput.value.toLowerCase();
+        autocompleteResults.innerHTML = ''; // เคลียร์ผลลัพธ์เก่าทุกครั้งที่พิมพ์
+
+        if (query.length === 0) {
+            autocompleteResults.style.display = 'none';
+            return;
+        }
+
+        // กรองรายชื่อประเทศที่ตรงกับที่พิมพ์
+        const filteredCountries = countries.filter(country => 
+            country.name.toLowerCase().includes(query)
+        );
+
+        if (filteredCountries.length > 0) {
+            autocompleteResults.style.display = 'block'; // แสดงกล่องผลลัพธ์
+            filteredCountries.forEach(country => {
+                const resultDiv = document.createElement('div');
+                resultDiv.textContent = country.name;
+
+                // เมื่อคลิกที่รายชื่อใน Dropdown
+                resultDiv.addEventListener('click', () => {
+                    typingInput.value = country.name; // ใส่ชื่อประเทศในช่อง input
+                    autocompleteResults.innerHTML = ''; // เคลียร์ผลลัพธ์
+                    autocompleteResults.style.display = 'none'; // ซ่อนกล่อง
+                });
+                autocompleteResults.appendChild(resultDiv);
+            });
+        } else {
+            autocompleteResults.style.display = 'none'; // ถ้าไม่เจอให้ซ่อน
+        }
+    });
+
+    // ปิด Dropdown เมื่อผู้ใช้คลิกที่อื่น
+    document.addEventListener('click', (e) => {
+        // เช็คว่าไม่ได้คลิกที่ input หรือที่กล่องผลลัพธ์
+        if (e.target !== typingInput && e.target !== autocompleteResults) {
+            autocompleteResults.style.display = 'none';
+        }
+    });
+    
+    // --- สิ้นสุดตรรกะสำหรับ Autocomplete ---
+
+
+    // ... (ฟังก์ชันและ Event Listener อื่นๆ ทั้งหมดเหมือนเดิม) ...
+    
+    // แก้ไขฟังก์ชัน displayNewQuestion เล็กน้อย
+    function displayNewQuestion() {
+        feedbackText.textContent = '';
+        feedbackText.className = '';
+        optionsContainer.innerHTML = '';
+        typingInput.value = '';
+        autocompleteResults.style.display = 'none'; // เพิ่มบรรทัดนี้เพื่อซ่อน dropdown เมื่อเริ่มข้อใหม่
+
+        const correctCountryIndex = Math.floor(Math.random() * countries.length);
+        // ... (โค้ดส่วนที่เหลือในฟังก์ชันเหมือนเดิม) ...
+    }
 
     function updateMuteButton() {
         if (bgMusic.muted || bgMusic.volume === 0) {

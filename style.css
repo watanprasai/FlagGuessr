@@ -585,6 +585,45 @@ h1 {
     animation: pop-in-animation 0.4s ease-out;
 }
 
+/* --- เพิ่มส่วนนี้เข้าไปในไฟล์ style.css --- */
+
+.autocomplete-wrapper {
+    position: relative; /* สำคัญมาก! เพื่อให้กล่องผลลัพธ์อยู่ถูกตำแหน่ง */
+    width: 100%;
+    max-width: 300px; /* ปรับขนาดได้ตามต้องการ */
+}
+
+.autocomplete-results {
+    position: absolute;
+    top: 100%; /* แสดงผลลัพธ์ต่อจากช่อง input */
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    max-height: 200px; /* จำกัดความสูงและให้มี scrollbar */
+    overflow-y: auto;
+    z-index: 1000; /* ทำให้แสดงอยู่เหนือ element อื่นๆ */
+    display: none; /* ซ่อนไว้เป็นค่าเริ่มต้น */
+}
+
+.autocomplete-results div {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.autocomplete-results div:hover {
+    background-color: #f1f1f1; /* สีพื้นหลังเมื่อเมาส์ชี้ */
+}
+
+/* คลาสสำหรับไฮไลท์รายการที่ถูกเลือกด้วยคีย์บอร์ด */
+.autocomplete-results div.autocomplete-active {
+    background-color: #4CAF50;
+    color: white;
+}
+
 @keyframes pop-in-animation {
     0% {
         transform: scale(0);

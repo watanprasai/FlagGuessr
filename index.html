@@ -41,7 +41,10 @@
         <div id="options-container" class="options-container"></div>
 
         <div id="typing-container" class="typing-container" style="display: none;">
-            <input type="text" id="typing-answer" placeholder="พิมพ์ชื่อประเทศ">
+            <div class="autocomplete-wrapper">
+                <input type="text" id="typing-answer" placeholder="ค้นหาและพิมพ์ชื่อประเทศ..." autocomplete="off">
+                <div id="autocomplete-results" class="autocomplete-results"></div>
+            </div>
             <button id="submit-answer">ส่งคำตอบ</button>
         </div>
 
