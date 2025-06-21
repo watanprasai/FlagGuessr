@@ -208,9 +208,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedbackText = document.getElementById('feedback');
     const nextButton = document.getElementById('next-button');
     const modeRadios = document.querySelectorAll('input[name="mode"]');
+    
 
     let correctAnswer = null;
     let currentMode = 'choice';
+
+    const bgMusic = document.getElementById('bg-music');
+    const correctSound = document.getElementById('correct-sound');
+    const incorrectSound = document.getElementById('incorrect-sound');
+
+    const muteButton = document.getElementById('mute-button');
+    const volumeSlider = document.getElementById('volume-slider');
+    const startScreen = document.getElementById('start-screen');
+    const startGameButton = document.getElementById('start-game-button');
+    const gameContainer = document.getElementById('game-container');
+    let lastVolume = 0.5;
+
+    function updateMuteButton() {
+        if (bgMusic.muted || bgMusic.volume === 0) {
+            muteButton.textContent = '🔇'; // แสดงไอคอนปิดเสียง
+        } else {
+            muteButton.textContent = '🔊'; // แสดงไอคอนเปิดเสียง
+        }
+    }
+
+    // 1. เมื่อเลื่อนแถบปรับเสียง
+    volumeSlider.addEventListener('input', (e) => {
+        const newVolume = parseFloat(e.target.value);
+        bgMusic.volume = newVolume;
+        
+        // ถ้าเลื่อนเสียงจาก 0 ให้ Unmute อัตโนมัติ
+        if (newVolume > 0 && bgMusic.muted) {
+            bgMusic.muted = false;
+        }
+        
+        // ถ้าเลื่อนเสียงไปที่ 0 ให้ Mute อัตโนมัติ
+        if (newVolume === 0) {
+            bgMusic.muted = true;
+        }
+
+        updateMuteButton();
+    });
+
+    // 2. เมื่อกดปุ่ม Mute
+    muteButton.addEventListener('click', () => {
+        if (bgMusic.muted) {
+            // ถ้ากำลังปิดเสียงอยู่ ให้เปิดเสียง
+            bgMusic.muted = false;
+            bgMusic.volume = lastVolume; // กลับไปใช้เสียงล่าสุดที่เคยตั้งไว้
+            volumeSlider.value = lastVolume;
+        } else {
+            // ถ้าเสียงเปิดอยู่ ให้ปิดเสียง
+            lastVolume = bgMusic.volume; // จำค่าความดังปัจจุบันไว้
+            bgMusic.muted = true;
+            volumeSlider.value = 0; // ตั้งแถบเลื่อนเป็น 0
+        }
+        updateMuteButton();
+    });
+
+    // --- แก้ไข Event Listener ของปุ่มเริ่มเกม ---
+    startGameButton.addEventListener('click', () => {
+        startScreen.style.display = 'none';
+        gameContainer.hidden = false;       
+
+        bgMusic.play().catch(error => {
+            console.log("การเล่นเพลงอัตโนมัติถูกเบราว์เซอร์บล็อก:", error);
+        });
+        
+        // ตั้งค่าเสียงเริ่มต้น
+        bgMusic.volume = 0.5;
+        volumeSlider.value = 0.5;
+        lastVolume = 0.5;
+        updateMuteButton(); // อัปเดตไอคอนปุ่มให้ถูกต้องตั้งแต่เริ่ม
+
+        displayNewQuestion();
+    });
 
     function shuffleArray(array) {
         // สลับลำดับข้อมูลใน Array แบบสุ่ม
@@ -256,22 +328,37 @@ document.addEventListener('DOMContentLoaded', () => {
         typingContainer.style.display = currentMode === 'typing' ? 'flex' : 'none';
     }
 
+      // ฟังก์ชัน checkAnswer (มีการปรับปรุงเล็กน้อย)
     function checkAnswer(selectedName) {
-        // ปิดการใช้งานปุ่มทั้งหมดหลังจากเลือกคำตอบ
+        // ปิดการใช้งานปุ่มและ input หลังจากตอบ
         const buttons = optionsContainer.querySelectorAll('.option-button');
-        buttons.forEach(button => {
-            button.disabled = true;
-        }); 
+        buttons.forEach(button => button.disabled = true);
+        submitAnswerButton.disabled = true;
+        typingInput.disabled = true;
 
-        // ตรวจสอบคำตอบและแสดงผล
-        if (selectedName === correctAnswer.name) {
+        if (selectedName.trim() === correctAnswer.name) {
             feedbackText.textContent = 'ถูกต้องครับ!';
             feedbackText.className = 'correct';
+            correctSound.currentTime = 0;
+            correctSound.play();
         } else {
             feedbackText.textContent = `ผิดครับ! คำตอบที่ถูกต้องคือ ${correctAnswer.name}`;
             feedbackText.className = 'incorrect';
+            incorrectSound.currentTime = 0;
+            incorrectSound.play();
         }
     }
+
+    // ฟังก์ชันสำหรับเริ่มคำถามใหม่ (มีการปรับปรุงเล็กน้อย)
+    function nextQuestion() {
+        // เปิดการใช้งานปุ่มและ input อีกครั้ง
+        const buttons = optionsContainer.querySelectorAll('.option-button');
+        buttons.forEach(button => button.disabled = false);
+        submitAnswerButton.disabled = false;
+        typingInput.disabled = false;
+        displayNewQuestion();
+    }
+
 
     // ตอบจากช่องพิมพ์
     submitAnswerButton.addEventListener('click', () => {
@@ -280,11 +367,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // เปลี่ยนโหมด
     modeRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
+        radio.addEventListener('change', (e) => {   
             currentMode = e.target.value;
             displayNewQuestion();
         });
     });
+
+     // --- ส่วนที่แก้ไขและเพิ่มใหม่ ---
+
+    // 1. จัดการการเริ่มเกมเมื่อกดปุ่ม
+    startGameButton.addEventListener('click', () => {
+        startScreen.style.display = 'none'; // ซ่อนหน้าจอเริ่มต้น
+        gameContainer.hidden = false;       // แสดงหน้าจอเกม
+        
+        // เล่นเพลงพื้นหลัง (ใช้ .play() เนื่องจาก promise อาจถูก reject ถ้าผู้ใช้ยังไม่กดอะไรเลย)
+        bgMusic.play().catch(error => {
+            console.log("การเล่นเพลงอัตโนมัติถูกเบราว์เซอร์บล็อก:", error);
+            // อาจจะแสดงปุ่มให้ผู้ใช้กดเปิดเสียงเอง
+        });
+
+        // เริ่มคำถามแรก
+        displayNewQuestion();
+    });
+
+    // 2. ปรับ Event Listener ของปุ่ม "ธงถัดไป" และปุ่มส่งคำตอบ
+    submitAnswerButton.addEventListener('click', () => {
+        checkAnswer(typingInput.value);
+    });
+
+    nextButton.addEventListener('click', nextQuestion); // ใช้ฟังก์ชัน nextQuestion ที่สร้างใหม่
+
+    // จัดการการเปลี่ยนโหมด
+    modeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            currentMode = e.target.value;
+            nextQuestion(); // เรียก nextQuestion เพื่อรีเซ็ตสถานะและแสดงคำถามใหม่
+        });
+    });
+
+    // 3. ลบการเรียก displayNewQuestion() ตรงนี้ออก
+    // displayNewQuestion(); // <--- ลบบรรทัดนี้
 
     // เมื่อกดปุ่ม "ธงถัดไป" ให้แสดงคำถามใหม่
     nextButton.addEventListener('click', displayNewQuestion);

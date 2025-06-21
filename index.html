@@ -8,8 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>🌍 เกมทายธงชาติ</h1>
+    <div id="start-screen">
+        <h1>เกมทายธงชาติ</h1>
+        <p>คุณรู้จักธงชาติทั่วโลกดีแค่ไหน?</p>
+        <button id="start-game-button">เริ่มเกม!</button>
+    </div>
+
+    <div id="game-container" class="container" hidden>
+
+        <div id="volume-controls">
+            <button id="mute-button">🔊</button>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+        
+        <h1>เกมทายธงชาติ</h1>
         <p class="question">ธงชาตินี้เป็นของประเทศอะไร?</p>
 
         <div class="mode-selector">
@@ -21,11 +33,9 @@
             <img id="flag-image" src="" alt="ธงชาติ">
         </div>
 
-        <!-- โหมดตัวเลือก -->
         <div id="options-container" class="options-container"></div>
 
-        <!-- โหมดพิมพ์ -->
-        <div id="typing-container" class="typing-container hidden">
+        <div id="typing-container" class="typing-container" style="display: none;">
             <input type="text" id="typing-answer" placeholder="พิมพ์ชื่อประเทศ">
             <button id="submit-answer">ส่งคำตอบ</button>
         </div>
@@ -35,5 +45,17 @@
     </div>
 
     <script src="script.js"></script>
+
+    <audio id="bg-music" loop hidden>
+        <source src="sounds/bg-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="correct-sound">
+        <source src="sounds/correct.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="incorrect-sound">
+        <source src="sounds/incorrect.mp3" type="audio/mpeg">
+    </audio>
 </body>
 </html>

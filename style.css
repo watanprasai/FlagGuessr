@@ -15,6 +15,108 @@ body {
     overflow-x: hidden;
 }
 
+/* --- เพิ่มส่วนนี้เข้าไปในไฟล์ style.css --- */
+
+#volume-controls {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* ระยะห่างระหว่างปุ่มกับแถบเลื่อน */
+}
+
+#mute-button {
+    background: none;
+    border: none;
+    font-size: 1.8rem; /* ขนาดไอคอน */
+    cursor: pointer;
+    padding: 0;
+    color: #333;
+}
+
+/* ปรับแต่งแถบเลื่อนให้ดูดีขึ้น */
+#volume-slider {
+    -webkit-appearance: none; /* ลบสไตล์เริ่มต้นของ Chrome/Safari */
+    appearance: none;
+    width: 100px; /* ความยาวของแถบเลื่อน */
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+#volume-slider:hover {
+    opacity: 1; /* ทำให้ชัดขึ้นเมื่อเมาส์ไปชี้ */
+}
+
+/* ตัวจับของแถบเลื่อน (Chrome, Safari, Opera, Edge) */
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* ตัวจับของแถบเลื่อน (Firefox) */
+#volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#start-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh; /* ทำให้เต็มความสูงของหน้าจอ */
+    padding: 20px;
+}
+
+#start-screen h1 {
+    background: linear-gradient(135deg, #f97faa, #0f8aae);
+    font-size: 3rem;
+    margin-bottom: 10px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#start-screen p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+#start-game-button {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 1.5rem;
+    padding: 15px 40px;
+    border-radius: 10px;
+    border: none;
+    background-color: #4CAF50; /* สีเขียว */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#start-game-button:hover {
+    background-color: #45a049;
+}
+
+/* ทำให้ typing-container ที่เคยมีคลาส hidden ทำงานได้ถูกต้อง */
+.hidden {
+    display: none;
+}
+
 .container {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
