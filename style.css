@@ -558,6 +558,47 @@ h1 {
     }
 }
 
+#streak-container {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+#streak-icon {
+    font-size: 1.5rem; /* ขนาดของไอคอน (emoji) */
+}
+
+#streak-counter {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Animation เวลาไอคอนปรากฏตัว */
+.pop-in {
+    animation: pop-in-animation 0.4s ease-out;
+}
+
+@keyframes pop-in-animation {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* High contrast mode */
 @media (prefers-contrast: high) {
     .container {

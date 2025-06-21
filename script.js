@@ -209,6 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButton = document.getElementById('next-button');
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     
+    const streakIcon = document.getElementById('streak-icon');
+    const streakCounter = document.getElementById('streak-counter');
+    let winStreak = 0; 
 
     let correctAnswer = null;
     let currentMode = 'choice';
@@ -328,25 +331,60 @@ document.addEventListener('DOMContentLoaded', () => {
         typingContainer.style.display = currentMode === 'typing' ? 'flex' : 'none';
     }
 
-      // ฟังก์ชัน checkAnswer (มีการปรับปรุงเล็กน้อย)
+     function updateStreakDisplay() {
+        streakCounter.textContent = `Win Streak: ${winStreak}`;
+
+        let icon = '';
+        let lastIcon = streakIcon.textContent;
+
+        // กำหนดไอคอนตามระดับของ Win Streak
+        if (winStreak >= 15) {
+            icon = '👑'; // เทพเจ้าแห่งธงชาติ!
+        } else if (winStreak >= 10) {
+            icon = '🔥'; // ร้อนแรง!
+        } else if (winStreak >= 5) {
+            icon = '🏆'; // แชมเปี้ยน!
+        } else if (winStreak >= 3) {
+            icon = '⭐'; // เริ่มมาดี!
+        }
+
+        streakIcon.textContent = icon;
+
+        // เพิ่ม Animation ถ้าไอคอนมีการเปลี่ยนแปลง
+        if (icon && icon !== lastIcon) {
+            streakIcon.classList.add('pop-in');
+            // ลบคลาสออกหลัง Animation จบ เพื่อให้สามารถเล่นซ้ำได้
+            setTimeout(() => {
+                streakIcon.classList.remove('pop-in');
+            }, 400);
+        }
+    }
+
+    // --- แก้ไขฟังก์ชัน checkAnswer() ---
     function checkAnswer(selectedName) {
-        // ปิดการใช้งานปุ่มและ input หลังจากตอบ
         const buttons = optionsContainer.querySelectorAll('.option-button');
         buttons.forEach(button => button.disabled = true);
         submitAnswerButton.disabled = true;
         typingInput.disabled = true;
 
         if (selectedName.trim() === correctAnswer.name) {
+            // --- เมื่อตอบถูก ---
             feedbackText.textContent = 'ถูกต้องครับ!';
             feedbackText.className = 'correct';
             correctSound.currentTime = 0;
             correctSound.play();
+            winStreak++; // เพิ่มค่า Win Streak
         } else {
+            // --- เมื่อตอบผิด ---
             feedbackText.textContent = `ผิดครับ! คำตอบที่ถูกต้องคือ ${correctAnswer.name}`;
             feedbackText.className = 'incorrect';
             incorrectSound.currentTime = 0;
             incorrectSound.play();
+            winStreak = 0; // รีเซ็ต Win Streak เป็น 0
         }
+        
+        // อัปเดตการแสดงผล Win Streak ทุกครั้งหลังตอบ
+        updateStreakDisplay();
     }
 
     // ฟังก์ชันสำหรับเริ่มคำถามใหม่ (มีการปรับปรุงเล็กน้อย)
