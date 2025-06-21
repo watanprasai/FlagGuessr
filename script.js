@@ -362,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- แก้ไขฟังก์ชัน checkAnswer() ---
     function checkAnswer(selectedName) {
+        console.log("teseeet")
         const buttons = optionsContainer.querySelectorAll('.option-button');
         buttons.forEach(button => button.disabled = true);
         submitAnswerButton.disabled = true;
@@ -398,10 +399,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ตอบจากช่องพิมพ์
-    submitAnswerButton.addEventListener('click', () => {
-        checkAnswer(typingInput.value);
-    });
+    // // ตอบจากช่องพิมพ์
+    // submitAnswerButton.addEventListener('click', () => {
+    //     checkAnswer(typingInput.value);
+    // });
 
     // เปลี่ยนโหมด
     modeRadios.forEach(radio => {
