@@ -252,8 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        optionsContainer.style.display = currentMode === 'choice' ? 'block' : 'none';
-        typingContainer.style.display = currentMode === 'typing' ? 'block' : 'none';
+        optionsContainer.style.display = currentMode === 'choice' ? 'grid' : 'none';
+        typingContainer.style.display = currentMode === 'typing' ? 'flex' : 'none';
     }
 
     function checkAnswer(selectedName) {
